@@ -28,6 +28,7 @@ module.exports = function(RED) {
     
     this.h_plus = Math.abs(parseFloat(config.hysteresisplus)) || 0;
     this.h_minus = Math.abs(parseFloat(config.hysteresisminus)) || 0;
+    this.isRampUsed = (parseInt(config.behavior) || 1 ? true : false);
     
     // experimental
     //this.profile = globalContext.get(node_name);
@@ -137,6 +138,16 @@ module.exports = function(RED) {
               this.h_minus = Math.abs(result.hysteresis_minus);
             }
             this.status(result.status);
+            break;
+
+          case "setbehavior":
+            if(msg.payload == "1" | msg.payload.toLowerCase() == "ramp"){
+              this.isRampUsed = true;
+            }else if(msg.payload == "0" | msg.payload.toLowerCase() == "step"){
+              this.isRampUsed = false;
+            }else{
+              this.warn('Unable to recognize behavior. Use "ramp" or "step"');
+            }
             break;
          
           case "checkupdate":
